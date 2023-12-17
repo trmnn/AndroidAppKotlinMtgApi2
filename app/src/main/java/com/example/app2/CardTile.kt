@@ -24,11 +24,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import okhttp3.OkHttpClient
@@ -66,7 +68,7 @@ fun getUnsafeClient(): OkHttpClient {
 }
 
 @Composable
-fun loadImage(url: String){
+fun loadImage(url: String) {
 
     val imageLoader =
         ImageLoader.Builder(LocalContext.current).okHttpClient { getUnsafeClient() }.build()
@@ -107,80 +109,89 @@ fun CardTile(card: MagicCard, context: Context) {
             .clickable {
                 isCollapsed = !isCollapsed
             },
-        horizontalAlignment = Alignment.Start
+
+
     ) {
+
         Text(
             text = card.name,
             color = Color.White,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(8.dp)
+                .height(40.dp),
         )
 
         if (!isCollapsed) {
             if (card.imageUrl != null) {
                 loadImage(card.imageUrl)
-            }
-            else{
+            } else {
                 loadImage("https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=132106&type=card")
             }
 
             val customColor = Color(235, 129, 164)
-
-            Text(
-                text = createAnnotatedStringWithColor(
-                    customColor,
-                    "Card rarity: ",
-                    card.rarity
-                ),
-                color = Color.White,
-                textAlign = TextAlign.Left,
+            Column(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(8.dp)
-            )
+            ) {
+                Text(
+                    text = createAnnotatedStringWithColor(
+                        customColor,
+                        "Card rarity: ",
+                        card.rarity
+                    ),
+                    color = Color.White,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(8.dp)
+                )
 
-            Text(
-                text = createAnnotatedStringWithColor(
-                    customColor,
-                    "Card subtype: ",
-                    card.subtypes?.joinToString(separator = ", ") ?: ""
-                ),
-                color = Color.White,
-                textAlign = TextAlign.Left,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            )
+                Text(
+                    text = createAnnotatedStringWithColor(
+                        customColor,
+                        "Card subtype: ",
+                        card.subtypes?.joinToString(separator = ", ") ?: ""
+                    ),
+                    color = Color.White,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(8.dp)
+                )
 
-            Text(
-                text = createAnnotatedStringWithColor(
-                    customColor,
-                    "Card type: ",
-                    card.types?.joinToString(separator = ", ") ?: ""
-                ),
-                color = Color.White,
-                textAlign = TextAlign.Left,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            )
+                Text(
+                    text = createAnnotatedStringWithColor(
+                        customColor,
+                        "Card type: ",
+                        card.types?.joinToString(separator = ", ") ?: ""
+                    ),
+                    color = Color.White,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(8.dp)
+                )
 
-            Text(
-                text = createAnnotatedStringWithColor(
-                    customColor,
-                    "Card text: \n",
-                    card.text
-                ),
-                color = Color.White,
-                textAlign = TextAlign.Left,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            )
+                Text(
+                    text = createAnnotatedStringWithColor(
+                        customColor,
+                        "Card text: \n",
+                        card.text
+                    ),
+                    color = Color.White,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(8.dp)
+                )
+            }
         }
     }
 }

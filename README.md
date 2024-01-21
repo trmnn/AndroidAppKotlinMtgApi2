@@ -1,1 +1,1 @@
-![App Preview](Screen1.png)
+![App Preview](demo/main_view.png)

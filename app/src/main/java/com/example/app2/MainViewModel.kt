@@ -2,17 +2,14 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app2.CardRepository
-import com.example.app2.CardViewModel
 import com.example.app2.MagicCard
 import kotlinx.coroutines.launch
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.app2.UiState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class MainViewModel(private val cardRepository: CardRepository) : ViewModel() {
+class MainViewModel(private val cardRepository: CardRepository = CardRepository()) : ViewModel() {
     private val _uiState = MutableLiveData<UiState<List<MagicCard>>>()
     val uiState: LiveData<UiState<List<MagicCard>>> = _uiState
 
@@ -27,15 +24,19 @@ class MainViewModel(private val cardRepository: CardRepository) : ViewModel() {
                 _uiState.value = UiState(data = sortedCards)
                 retryCount = 0
             } catch (e: Exception) {
-                if (retryCount < 3) {
-                    retryCount++
-                    _uiState.value = UiState(error = "Retry attempt $retryCount...")
-                    delay(1000L)
-                    fetchMagicCards()
-                } else {
-                    _uiState.value = UiState(error = "Failed after 3 retries: ${e.localizedMessage}")
-                }
+                handleFetchError(e)
             }
         }
     }
+    private suspend fun handleFetchError(e: Exception) {
+        if (retryCount < 3) {
+            retryCount++
+            _uiState.value = UiState(error = "Retry attempt $retryCount...")
+            delay(1000L)
+            fetchMagicCards()
+        } else {
+            _uiState.value = UiState(error = "Failed after 3 retries: ${e.localizedMessage}")
+        }
+    }
 }
+

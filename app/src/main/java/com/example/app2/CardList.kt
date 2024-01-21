@@ -20,7 +20,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun CardList(viewModel: MainViewModel, context: Context) {
+fun CardList(viewModel: MainViewModel, onClick: (String) -> Unit) {
     val uiState by viewModel.uiState.observeAsState(initial = UiState(isLoading = true))
 
     when {
@@ -44,9 +44,10 @@ fun CardList(viewModel: MainViewModel, context: Context) {
             val cards = uiState.data?.filter { !it.imageUrl.isNullOrEmpty() } ?: emptyList()
             LazyColumn {
                 items(cards) { card ->
-                    CardTile(card = card, context = context)
+                    CardTile(card = card, onClick = onClick)
                 }
             }
         }
     }
 }
+
